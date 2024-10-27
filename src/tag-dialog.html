@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dialog with simple js tag</title>
+    <script src="js/dialog.js"></script>
+</head>
+<body>
+
+<template id="my-dialog">
+    <dialog id="dialog" onclick="closeDialog.apply(this, arguments)">
+        <form method="dialog">
+            <button style="float: right" type="submit">x</button>
+        </form>
+        <div class="header">Header of dialog</div>
+        <p class="content">Content of dialog</p>
+        <div class="footer">footer of dialog</div>
+    </dialog>
+    <script>
+        window.closeDialog = function (event) {
+            let rect = event.target.getBoundingClientRect();
+            if (rect.left > event.clientX ||
+                rect.right < event.clientX ||
+                rect.top > event.clientY ||
+                rect.bottom < event.clientY
+            ) {
+                event.target.close();
+            }
+        }
+        window.showDialog = function (options) {
+            const dialog = document.querySelector("my-dialog").shadowRoot.getElementById("dialog");
+
+            if (options.header) {
+                dialog.querySelector(".header").innerText = options.header;
+            }
+            if (options.content) {
+                dialog.querySelector(".content").innerText = options.content;
+            }
+            if (options.footer) {
+                dialog.querySelector(".footer").innerText = options.footer;
+            }
+
+            dialog.showModal();
+        }
+    </script>
+</template>
+
+<my-dialog></my-dialog>
+
+<button type="button"
+        onclick="window.showDialog({header: 'hello', content: 'Dies ist der neue Inhalt', footer: 'Unten'})">Show dialog
+</button>
+</body>
+</html>
