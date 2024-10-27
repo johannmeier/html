@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        .outerdiv {
+            display: inline-block;
+            width: 620px;
+        }
+
+        .first {
+            display: inline-block;
+            width: 300px;
+            background-color: chartreuse;
+            border-width: 1px;
+            border-color: black;
+        }
+
+        .right {
+            display: inline-block;
+            float: right;
+            width: 300px;
+            background-color: aqua;
+        }
+
+        .third {
+            display: inline-block;
+            width: 300px;
+            background-color: blueviolet;
+        }
+
+        .fourth {
+            display: inline-block;
+            width: 500px;
+            background-color: chocolate;
+        }
+
+
+        /* Responsive layout - makes a one column layout instead of a two-column layout */
+        @media (max-width: 800px) {
+            .outerdiv {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+            .first {
+                order: 1;
+            }
+            .right {
+                order: 3;
+            }
+            .third {
+                order: 2;
+            }
+            .fourth {
+                order: 4;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="outerdiv">
+    <div class="right"><h1>right</h1><p>first paragraph</p><p>second paragraph</p></div>
+    <div class="first"><h1>first</h1><p>first paragraph</p></div>
+    <div class="third"><h1>third</h1><p>first paragraph</p></div>
+    <div class="fourth"><h1>fourth</h1><p>first paragraph</p></div>
+</div>
+
+</body>
+</html>

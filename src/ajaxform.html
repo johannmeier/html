@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajax form submit</title>
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            margin: 0;
+            width: 100%;
+        }
+
+        .left, .middle  {
+            display: flex;
+            flex-flow: column;
+        }
+
+        .left {
+            width: 10rem;
+        }
+
+        .middle {
+            flex-grow: 40;
+        }
+
+        .nav1 {
+            display: flex;
+            align-items: baseline;
+            background-color: chartreuse;
+            flex-grow: 1;
+        }
+
+        .nav2 {
+            background-color: chocolate;
+            height: 100%;
+        }
+
+        .content {
+            flex-grow: 1;
+            background-color: aquamarine;
+            height: 100%;
+        }
+
+        .icon {
+            background-color: blueviolet;
+        }
+
+        .debugger {
+            flex-grow: 1;
+            background-color: brown;
+        }
+
+        .nav1, .icon {
+            height: 5rem;
+        }
+
+        .nav2 nav {
+            display: flex;
+            flex-flow: column;
+        }
+
+    </style>
+    <script src="js/app.js"></script>
+</head>
+<body>
+
+<div class="left">
+    <div class="icon">
+        <h1>icon</h1>
+    </div>
+    <div class="nav2">
+        <h1>nav2</h1>
+        <nav>
+            <a href="content1.html">Content 1</a>
+            <a href="content2.html">Content 2</a>
+        </nav>
+    </div>
+</div>
+<div class="middle">
+    <div class="nav1">
+        <h1>nav1</h1>
+        <nav>
+            <a href="content1.html">Content 1</a>
+            <a href="content2.html">Content 2</a>
+        </nav>
+    </div>
+    <div class="content" id="content">
+        <h1>content</h1>
+        <form name="form1" action="content2.html">
+            <label>Name</label><input type="text" name="name"/>
+            <button type="submit" name="submit">submit</button>
+        </form>
+    </div>
+</div>
+<div class="debugger">
+    <h1>debugger</h1>
+</div>
+
+<script>
+    new App();
+</script>
+</body>
+</html>
