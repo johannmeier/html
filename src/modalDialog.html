@@ -20,15 +20,11 @@
 </button>
 
 <button type="button"
-        onclick="window.dialog.showOkCancelDialog('<p>lorem.html</p>', window.okCallback)">Show ok cancel dialog
+        onclick="window.dialog.showOkCancelDialog('<p>lorem.html</p>', () => {
+            const text = document.getElementById('text');
+            text.innerText = text.innerText + 'ok';
+        }, 'info')">Show ok cancel dialog
 </button>
-
-<script>
-    window.okCallback = function () {
-        const text = document.getElementById('text');
-        text.innerText = text.innerText + "ok";
-    }
-</script>
 
 <p id="text"></p>
 </body>

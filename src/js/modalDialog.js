@@ -1,6 +1,12 @@
 window.dialog = (function () {
+    const map = new Map([
+        ["error", `<img class="type" alt="Error" src="/img/error.svg"/>`],
+        ["warning", `<img class="type" alt="Warning" src="/img/warning.svg"/>`],
+        ["info", `<img class="type" alt="Warning" src="/img/info.svg"/>`]
+    ]);
+
     function closeDialog(event) {
-        let rect = event.target.getBoundingClientRect();
+        const rect = event.target.getBoundingClientRect();
         if (rect.left > event.clientX ||
             rect.right < event.clientX ||
             rect.top > event.clientY ||
@@ -10,14 +16,18 @@ window.dialog = (function () {
         }
     }
 
-    function showOkCancelDialog(content, okCallback) {
-        const dialog = createHostAndDialog("okCancelDialogDiv", `<span>${content}</span>`,
+    function showDialog(content, type) {
+        createHostAndDialog("dialogDiv",
+            `${map.get(type) ? map.get(type) : ""}<span>${content}</span>`
+        ).showModal();
+    }
+
+    function showOkCancelDialog(content, okCallback, type) {
+        const dialog = createHostAndDialog("okCancelDialogDiv",
+            `${map.get(type) ? map.get(type) : ""}<span>${content}</span>`,
             (dialog) => {
                 const buttonDiv = document.createElement("div");
-                buttonDiv.style.marginTop = "5px";
-                buttonDiv.style.display = "flex";
-                buttonDiv.style.justifyContent = "center";
-                buttonDiv.style.gap = "5px";
+                buttonDiv.className = "buttons"
                 buttonDiv.innerHTML = "<button form='dialog-form' value='ok'>Ok</button><button form='dialog-form' value='cancel'>Cancel</button>";
                 dialog.appendChild(buttonDiv);
 
@@ -29,24 +39,6 @@ window.dialog = (function () {
             });
         dialog.showModal();
     }
-
-    function showDialog(content, type) {
-        let map = new Map([
-            ["error", `<img style="float: left; height: 30px" alt="Error" src="/img/error.svg"/>`],
-            ["warning", `<img style="float: left; height: 30px" alt="Warning" src="/img/warning.svg"/>`],
-            ["info", `<img style="float: left; height: 30px" alt="Warning" src="/img/info.svg"/>`]
-        ]);
-
-        let img = map.get(type);
-        if (!img) {
-            img = "";
-        }
-
-        createHostAndDialog("dialogDiv",
-            `${img}<span>${content}</span>`
-        ).showModal();
-    }
-
     function showAjaxDialog(url) {
         const dialog = createHostAndDialog("ajaxDialogDiv",
             `<div id="ajaxTarget"></div>`
@@ -63,10 +55,9 @@ window.dialog = (function () {
             iframe.width = iframe.contentWindow.document.documentElement.scrollWidth + x + "px";
         }
 
-        const dialog = createHostAndDialog("iframeDialogDiv", `<iframe style="border:none"</iframe>`,
+        const dialog = createHostAndDialog("iframeDialogDiv", `<iframe class="iframe"</iframe>`,
             (dialog) => {
                 dialog.querySelector("iframe").addEventListener("load", resizeIframe);
-                dialog.style.padding = "0";
             })
         dialog.querySelector("iframe").src = url;
         dialog.showModal();
@@ -79,7 +70,7 @@ window.dialog = (function () {
             host.id = hostId;
             document.body.appendChild(host);
             const shadow = host.attachShadow({mode: 'open'});
-            shadow.innerHTML = getDialogHtml(content);
+            shadow.innerHTML = getDialogHtml(content, hostId + "Dialog");
             const dialog = shadow.querySelector("dialog");
             dialog.addEventListener("click", closeDialog);
             if (createdCallback) {
@@ -89,16 +80,12 @@ window.dialog = (function () {
         return host.shadowRoot.querySelector("dialog");
     }
 
-    function getDialogHtml(contentElement) {
-        return `<style>
-             dialog[open] {
-                 background-color: aquamarine;
-                 min-width: 200px;
-             }
-         </style>
-         <dialog style="padding: 5px">
+    function getDialogHtml(contentElement, dialogId) {
+        return `
+         <link rel="stylesheet" href="/css/modalDialog.css">
+         <dialog id="${dialogId}">
              <form method="dialog" id="dialog-form">
-                 <button style="position:absolute;right:0;top:0;font-size:x-small;padding:0" type="submit">✖️</button>
+                 <button class="close" type="submit">✖️</button>
              </form>
              ${contentElement}
          </dialog>`;

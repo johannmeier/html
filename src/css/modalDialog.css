@@ -1,0 +1,36 @@
+dialog {
+    padding: 5px;
+}
+
+dialog > form > button.close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: x-small;
+    padding: 0
+}
+
+dialog#okCancelDialogDivDialog div.buttons {
+    margin-top: 5px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+dialog#dialogDivDialog > img.type, dialog#okCancelDialogDivDialog > img.type {
+    float: left;
+    height: 30px;
+}
+
+dialog#iframeDialogDivDialog > iframe.iframe {
+    border: none;
+}
+
+dialog#iframeDialogDivDialog {
+    padding: 0;
+}
+
+dialog[open] {
+    background-color: aquamarine;
+    min-width: 200px;
+}
