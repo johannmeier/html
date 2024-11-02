@@ -3,6 +3,12 @@
 <head>
     <meta charset="utf-8">
     <title>Simple template</title>
+    <style>
+        iframe {
+            padding: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
 
@@ -10,15 +16,29 @@
 
 <div id="dialogHost">
     <template id="dialogTemplate" shadowrootmode="open">
-        <dialog id="dialog" onclick="closeDialog.apply(this, arguments)">
+        <style>
+            dialog[open] {
+                background-color: aquamarine;
+                display: flex;
+                flex-direction: column;
+            }
+
+            dialog[close] {
+                display: none;
+            }
+        </style>
+        <dialog style="padding:0" onclick="closeDialog.apply(this, arguments)">
             <form method="dialog">
-                <button style="float: right" type="submit">x</button>
+                <button style="position:absolute;right:0;top:0;font-size:x-small;padding:0" type="submit">✖️</button>
             </form>
-            <div class="header">Header of dialog</div>
-            <p class="content">Content of dialog</p>
-            <div class="footer">footer of dialog</div>
+            <iframe style="border:none" onload="window.resizeIframe(this)"></iframe>
         </dialog>
         <script>
+            window.resizeIframe = function(iframe) {
+                let x = 5;
+                iframe.height = iframe.contentWindow.document.documentElement.scrollHeight + x + "px";
+                iframe.width = iframe.contentWindow.document.documentElement.scrollWidth + x + "px";
+            }
             window.closeDialog = function (event) {
                 let rect = event.target.getBoundingClientRect();
                 if (rect.left > event.clientX ||
@@ -34,12 +54,12 @@
 </div>
 
 <button type="button"
-        onclick="window.showDialog({header: 'hello', content: 'Dies ist der neue Inhalt', footer: 'Unten'})">Show dialog
+        onclick="window.showDialog({})">Show dialog
 </button>
 
 <script>
     window.showDialog = function (options) {
-        const dialog = document.getElementById("dialogHost").shadowRoot.getElementById("dialog");
+        const dialog = document.getElementById("dialogHost").shadowRoot.querySelector("dialog");
 
         if (options.header) {
             dialog.querySelector(".header").innerText = options.header;
@@ -52,6 +72,7 @@
         }
 
         dialog.showModal();
+        dialog.querySelector("iframe").src = "lorem.html"
     }
 
 </script>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/modalDialog.js"></script>
+</head>
+<body>
+
+<dialog id="hello">
+    <form method="dialog" id="dialog-form">
+        <button value="x" style="position:absolute;right:0;top:0;font-size:x-small;padding:0">✖</button>
+    </form>
+    <p>Hello World</p>
+    <button form="dialog-form" value="ok">Ok</button>
+    <button form="dialog-form" value="cancel">Cancel</button>
+</dialog>
+
+<button type="button"
+        onclick="window.showIframeDialog('lorem.html')">Show iframe dialog
+</button>
+
+<button type="button"
+        onclick="window.showDialog('lorem.html')">Show dialog
+</button>
+
+<button type="button" onclick="window.showHello()">Show dialog</button>
+<script>
+    window.showHello = function () {
+        const dialog = document.getElementById('hello');
+        dialog.returnValue = "initial-value";
+        dialog.showModal();
+
+        dialog.addEventListener("close", () => {
+            const text = document.getElementById('text');
+            text.innerText = dialog.returnValue;
+        });
+    }
+</script>
+
+<p id="text"></p>
+</body>
+</html>
