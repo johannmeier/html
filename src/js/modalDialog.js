@@ -47,6 +47,14 @@ window.dialog = (function () {
         ).showModal();
     }
 
+    function showAjaxDialog(url) {
+        const dialog = createHostAndDialog("ajaxDialogDiv",
+            `<div id="ajaxTarget"></div>`
+        );
+        getData(url, dialog.querySelector("#ajaxTarget")).then(r => console.log(r));
+        dialog.showModal();
+    }
+
     function showIframeDialog(url) {
         function resizeIframe(event) {
             const iframe = event.currentTarget;
@@ -96,9 +104,23 @@ window.dialog = (function () {
          </dialog>`;
     }
 
+    async function getData(url, target) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+
+            target.innerHTML = await response.text();
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
     return {
         "showDialog": showDialog,
         "showOkCancelDialog": showOkCancelDialog,
-        "showIframeDialog": showIframeDialog
+        "showIframeDialog": showIframeDialog,
+        "showAjaxDialog": showAjaxDialog
     }
 })();
