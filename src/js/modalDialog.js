@@ -64,7 +64,9 @@ window.dialog = (function () {
             rect.top > event.clientY ||
             rect.bottom < event.clientY
         ) {
-            event.target.close();
+            if (event.target.tagName === "DIALOG") {
+                event.target.close();
+            }
         }
     }
 
