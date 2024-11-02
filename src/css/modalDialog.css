@@ -10,23 +10,23 @@ dialog > form > button.close {
     padding: 0
 }
 
-dialog#okCancelDialogDivDialog div.buttons {
+dialog#okCancelDialogHostDialog div.buttons {
     margin-top: 5px;
     display: flex;
     justify-content: center;
     gap: 5px;
 }
 
-dialog#dialogDivDialog > img.type, dialog#okCancelDialogDivDialog > img.type {
+dialog#dialogHostDialog img.type, dialog#okCancelDialogHostDialog img.type {
     float: left;
     height: 30px;
 }
 
-dialog#iframeDialogDivDialog > iframe.iframe {
+dialog#iframeDialogHostDialog > iframe.iframe {
     border: none;
 }
 
-dialog#iframeDialogDivDialog {
+dialog#iframeDialogHostDialog {
     padding: 0;
 }
 

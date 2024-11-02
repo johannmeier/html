@@ -1,34 +1,17 @@
 window.dialog = (function () {
-    const map = new Map([
-        ["error", `<img class="type" alt="Error" src="/img/error.svg"/>`],
-        ["warning", `<img class="type" alt="Warning" src="/img/warning.svg"/>`],
-        ["info", `<img class="type" alt="Warning" src="/img/info.svg"/>`]
-    ]);
-
-    function closeDialog(event) {
-        const rect = event.target.getBoundingClientRect();
-        if (rect.left > event.clientX ||
-            rect.right < event.clientX ||
-            rect.top > event.clientY ||
-            rect.bottom < event.clientY
-        ) {
-            event.target.close();
-        }
-    }
-
+    // public
     function showDialog(content, type) {
-        createHostAndDialog("dialogDiv",
-            `${map.get(type) ? map.get(type) : ""}<span>${content}</span>`
-        ).showModal();
+        const dialog = createHostAndDialog("dialogHost", elementHtmlMap.get("spanTarget"));
+        dialog.querySelector("#content").innerHTML = `${elementHtmlMap.get(type) ? elementHtmlMap.get(type) : ""}${content}`;
+        dialog.showModal();
     }
 
     function showOkCancelDialog(content, okCallback, type) {
-        const dialog = createHostAndDialog("okCancelDialogDiv",
-            `${map.get(type) ? map.get(type) : ""}<span>${content}</span>`,
+        const dialog = createHostAndDialog("okCancelDialogHost", elementHtmlMap.get("spanTarget"),
             (dialog) => {
                 const buttonDiv = document.createElement("div");
                 buttonDiv.className = "buttons"
-                buttonDiv.innerHTML = "<button form='dialog-form' value='ok'>Ok</button><button form='dialog-form' value='cancel'>Cancel</button>";
+                buttonDiv.innerHTML = elementHtmlMap.get("buttons");
                 dialog.appendChild(buttonDiv);
 
                 dialog.addEventListener("close", () => {
@@ -37,12 +20,12 @@ window.dialog = (function () {
                     }
                 });
             });
+        dialog.querySelector("#content").innerHTML = `${elementHtmlMap.get(type) ? elementHtmlMap.get(type) : ""}${content}`;
         dialog.showModal();
     }
+
     function showAjaxDialog(url) {
-        const dialog = createHostAndDialog("ajaxDialogDiv",
-            `<div id="ajaxTarget"></div>`
-        );
+        const dialog = createHostAndDialog("ajaxDialogHost", elementHtmlMap.get("ajaxTarget"));
         getData(url, dialog.querySelector("#ajaxTarget")).then(r => console.log(r));
         dialog.showModal();
     }
@@ -55,12 +38,34 @@ window.dialog = (function () {
             iframe.width = iframe.contentWindow.document.documentElement.scrollWidth + x + "px";
         }
 
-        const dialog = createHostAndDialog("iframeDialogDiv", `<iframe class="iframe"</iframe>`,
+        const dialog = createHostAndDialog("iframeDialogHost", elementHtmlMap.get("iframeTarget"),
             (dialog) => {
                 dialog.querySelector("iframe").addEventListener("load", resizeIframe);
-            })
+            });
         dialog.querySelector("iframe").src = url;
         dialog.showModal();
+    }
+
+    // private
+    const elementHtmlMap = new Map([
+        ["error", `<img class="type" alt="Error" src="/img/error.svg"/>`],
+        ["warning", `<img class="type" alt="Warning" src="/img/warning.svg"/>`],
+        ["info", `<img class="type" alt="Info" src="/img/info.svg"/>`],
+        ["buttons", `<button form='dialog-form' value='ok'>Ok</button><button form='dialog-form' value='cancel'>Cancel</button>`],
+        ["ajaxTarget", `<div id="ajaxTarget"></div>`],
+        ["iframeTarget", `<iframe class="iframe"</iframe>`],
+        ["spanTarget", `<span id="content"></span>`]
+    ]);
+
+    function closeDialog(event) {
+        const rect = event.target.getBoundingClientRect();
+        if (rect.left > event.clientX ||
+            rect.right < event.clientX ||
+            rect.top > event.clientY ||
+            rect.bottom < event.clientY
+        ) {
+            event.target.close();
+        }
     }
 
     function createHostAndDialog(hostId, content, createdCallback) {
