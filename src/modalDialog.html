@@ -7,34 +7,22 @@
 </head>
 <body>
 
-<dialog id="hello">
-    <form method="dialog" id="dialog-form">
-        <button value="x" style="position:absolute;right:0;top:0;font-size:x-small;padding:0">✖</button>
-    </form>
-    <p>Hello World</p>
-    <button form="dialog-form" value="ok">Ok</button>
-    <button form="dialog-form" value="cancel">Cancel</button>
-</dialog>
-
 <button type="button"
-        onclick="window.showIframeDialog('lorem.html')">Show iframe dialog
+        onclick="window.dialog.showIframeDialog('lorem.html')">Show iframe dialog
 </button>
 
 <button type="button"
-        onclick="window.showDialog('lorem.html')">Show dialog
+        onclick="window.dialog.showDialog('lorem.html', 'warning')">Show dialog
 </button>
 
-<button type="button" onclick="window.showHello()">Show dialog</button>
+<button type="button"
+        onclick="window.dialog.showOkCancelDialog('<p>lorem.html</p>', window.okCallback)">Show ok cancel dialog
+</button>
+
 <script>
-    window.showHello = function () {
-        const dialog = document.getElementById('hello');
-        dialog.returnValue = "initial-value";
-        dialog.showModal();
-
-        dialog.addEventListener("close", () => {
-            const text = document.getElementById('text');
-            text.innerText = dialog.returnValue;
-        });
+    window.okCallback = function () {
+        const text = document.getElementById('text');
+        text.innerText = text.innerText + "ok";
     }
 </script>
 
