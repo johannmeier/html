@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+    <style>
+        dialog#objektmenu {
+            margin: 0;
+        }
+
+        dialog#objektmenu[open] {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 0;
+        }
+
+        dialog#objektmenu button.close {
+            font-size: x-small;
+            padding: 0;
+        }
+
+        dialog#objektmenu nav button {
+            padding: 0;
+            border: none;
+            height: 20px;
+            text-align: left;
+        }
+
+        dialog#objektmenu header {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+            background-color: darkgray;
+        }
+
+        dialog#objektmenu nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        dialog#objektmenu nav:not(:first-of-type) {
+            border-top: 2px solid darkgray;
+        }
+
+        dialog#objektmenu img {
+            height: 20px;
+        }
+
+        dialog#objektmenu button:hover {
+            background-color: lightgray !important;
+        }
+
+        dialog#objektmenu nav button:nth-of-type(even) {
+            background-color: darkgray;
+        }
+
+        dialog#objektmenu div.menu-item {
+            display: flex;
+        }
+
+        dialog#objektmenu div.menu-item > button:first-child {
+            flex-grow: 1;
+        }
+
+        dialog#objektmenu div.menu-item > button:first-child:disabled {
+            color: black;
+            background-color: darkgray;
+        }
+
+        dialog#objektmenu hr {
+            border: none;
+            border-top: 2px solid #333;
+            color: #333;
+            overflow: visible;
+            text-align: center;
+            height: 2px;
+            width: 100%;
+            padding: 0;
+            margin: 2px 0 0;
+        }
+
+        dialog#objektmenu form[data-action] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<dialog id="objektmenu">
+    <form method="dialog" id="dialog-form">
+        <header>
+            <span id="menu-header"></span>
+            <button autofocus class="close" type="submit">✖️</button>
+        </header>
+    </form>
+    <nav id="user">
+        <button data-requestname="erfassen" form="submit-menu" role="link">Erfassen</button>
+        <button data-requestname="bereitstellen" form="submit-menu" role="link">Bereitstellen</button>
+        <hr/>
+        <div class="menu-item">
+            <button disabled>Protokoll</button>
+            <button data-requestname="protocol" form="submit-menu" role="link">
+                <img alt="view protocol" src="/img/info.svg"/>
+            </button>
+        </div>
+        <div class="menu-item">
+            <button disabled>Item 4</button>
+            <button form="submit-menu" data-requestname="protokoll" role="link">
+                <img alt="view protocol" src="/img/info.svg"/>
+            </button>
+            <button form="download-protocol" data-requestname="download-protokoll" role="link">
+                <img alt="download protocol" src="/img/warning.svg"/>
+            </button>
+        </div>
+    </nav>
+    <nav id="dvz">
+        <button data-requestname="freigeben" form="submit-menu" role="link">Freigeben</button>
+        <button data-requestname="reaktivieren" form="submit-menu" role="link">Reaktivieren</button>
+    </nav>
+    <nav id="admin">
+        <button data-requestname="administrieren" form="submit-menu" role="link">Administrieren</button>
+        <button data-requestname="loeschen" form="submit-menu" role="link">Objekt aus DB löschen</button>
+    </nav>
+
+    <form data-action action="page1.html" id="submit-menu">
+        <input type="hidden" name="sys_sid" value="1234567890"/>
+        <input type="hidden" name="sys_requestname"/>
+        <input type="hidden" name="objname"/>
+        <input type="hidden" name="objart"/>
+    </form>
+
+    <form data-action action="page2.html" id="download-protocol">
+        <input type="hidden" name="sys_sid" value="1234567890"/>
+        <input type="hidden" name="sys_requestname"/>
+        <input type="hidden" name="objname"/>
+        <input type="hidden" name="objart"/>
+    </form>
+</dialog>
+
+<button class="menu-button" data-objname="UEJUN1" data-objart="PGM" data-status="E">UEJUN1.PGM</button>
+<button class="menu-button" data-objname="UEJ9I" data-objart="EAR" data-status="B">UEJ9I.EAR</button>
+
+<script src="/js/objektmenu.js"></script>
+
+</body>
+</html>
