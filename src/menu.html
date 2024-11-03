@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+    <style>
+        dialog {
+            margin: 0;
+        }
+
+        dialog[open] {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 0;
+        }
+
+        button.close {
+            font-size: x-small;
+            padding: 0
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+            background-color: darkgray;
+        }
+
+        nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        a {
+            display: flex;
+        }
+
+        a > img {
+            height: 20px;
+        }
+
+        a:hover {
+            background-color: lightgray !important;
+        }
+
+        a:nth-of-type(even) {
+            background-color: darkgray;
+        }
+
+        div.menu-item {
+            display: flex;
+        }
+
+        div.menu-item > a:first-child {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+<dialog id="menu">
+    <form method="dialog" id="dialog-form">
+        <header>
+            <span>UEJUN1.PGM</span>
+            <button autofocus class="close" type="submit">✖️</button>
+        </header>
+    </form>
+    <nav>
+        <a href="page1.html" id="item-1" role="link">Item 1</a>
+        <a href="page2.html" id="item-2" role="link">Item 2</a>
+        <div class="menu-item" id="item-3">
+            <a href="page3.html" role="link"><span>Item 3</span></a>
+            <a href="page1.html" role="link"><img alt="info" src="/img/info.svg"/></a>
+        </div>
+        <div class="menu-item" id="item-4">
+            <a href="page4.html" role="link">Item 4</a>
+            <a href="page1.html" role="link"><img alt="info" src="/img/info.svg"/></a>
+            <a href="page2.html" role="link"><img alt="warning" src="/img/warning.svg"/></a>
+        </div>
+    </nav>
+</dialog>
+
+<button id="button">open menu</button>
+<script>
+    document.getElementById("button").addEventListener("click", (event) => {
+        const button = event.target;
+        const menu = document.getElementById("menu");
+        const rect = button.getBoundingClientRect();
+        menu.style.left = rect.left + "px";
+        menu.style.top = rect.top + rect.height + "px";
+        disableMenuItem(document.getElementById("item-4"));
+        menu.showModal();
+    })
+
+    document.getElementById("menu").addEventListener("click", (event) => {
+        const rect = event.target.getBoundingClientRect();
+        if (rect.left > event.clientX ||
+            rect.right < event.clientX ||
+            rect.top > event.clientY ||
+            rect.bottom < event.clientY
+        ) {
+            if (event.target.tagName === "DIALOG") {
+                event.target.close();
+            }
+        }
+    });
+
+    function disableMenuItem(item) {
+        if ("A" === item.tagName) {
+            if (item.href) {
+                item.dataset['href'] = item.href;
+                item.removeAttribute("href");
+                item.ariaDisabled = true;
+            }
+        } else {
+            item.childNodes.forEach(node => disableMenuItem(node));
+        }
+    }
+
+    function enableMenuItem(item) {
+        if ("A" === item.tagName) {
+            if (item.dataset.href) {
+                item.href = item.dataset.href;
+                item.removeAttribute("data-href");
+                item.removeAttribute("aria-disabled");
+            }
+        } else {
+            item.childNodes.forEach(node => enableMenuItem(node));
+        }
+    }
+
+</script>
+</body>
+</html>
