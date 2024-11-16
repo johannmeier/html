@@ -41,9 +41,22 @@
         });
     }
 
+    function disableAll(menu) {
+        document.querySelectorAll("button[data-requestname]").forEach(button => {
+            disableMenuItem(button);
+        })
+    }
+
     function enableDisableItems(menu, objname, objart, status) {
-        if (status === "E") {
-            disableMenuItem(menu.querySelector("[data-requestname='freigeben']"));
+        disableAll(menu);
+
+        if (status !== "S") {
+            enableMenuItem(menu.querySelector("[data-requestname='erfassen']"));
+            enableMenuItem(menu.querySelector("[data-requestname='bereitstellen']"));
+        }
+
+        if (status === "B") {
+            enableMenuItem(menu.querySelector("[data-requestname='freigeben']"));
         }
     }
 

@@ -4,72 +4,72 @@
     <meta charset="UTF-8">
     <title>Menu</title>
     <style>
-        dialog#objektmenu {
+        dialog.listmenu {
             margin: 0;
         }
 
-        dialog#objektmenu[open] {
+        dialog.listmenu[open] {
             display: flex;
             flex-direction: column;
             gap: 5px;
             padding: 0;
         }
 
-        dialog#objektmenu button.close {
+        dialog.listmenu button.close {
             font-size: x-small;
             padding: 0;
         }
 
-        dialog#objektmenu nav button {
+        dialog.listmenu nav button {
             padding: 0;
             border: none;
             height: 20px;
             text-align: left;
         }
 
-        dialog#objektmenu header {
+        dialog.listmenu header {
             display: flex;
             justify-content: space-between;
             gap: 5px;
             background-color: darkgray;
         }
 
-        dialog#objektmenu nav {
+        dialog.listmenu nav {
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
 
-        dialog#objektmenu nav:not(:first-of-type) {
+        dialog.listmenu nav:not(:first-of-type) {
             border-top: 2px solid darkgray;
         }
 
-        dialog#objektmenu img {
+        dialog.listmenu img {
             height: 20px;
         }
 
-        dialog#objektmenu button:hover {
+        dialog.listmenu button:hover {
             background-color: lightgray !important;
         }
 
-        dialog#objektmenu nav button:nth-of-type(even) {
+        dialog.listmenu nav button:nth-of-type(even) {
             background-color: darkgray;
         }
 
-        dialog#objektmenu div.menu-item {
+        dialog.listmenu div.menu-item {
             display: flex;
         }
 
-        dialog#objektmenu div.menu-item > button:first-child {
+        dialog.listmenu div.menu-item > button:first-child {
             flex-grow: 1;
         }
 
-        dialog#objektmenu div.menu-item > button:first-child:disabled {
+        dialog.listmenu div.menu-item > button:first-child:disabled {
             color: black;
             background-color: darkgray;
         }
 
-        dialog#objektmenu hr {
+        dialog.listmenu hr {
             border: none;
             border-top: 2px solid #333;
             color: #333;
@@ -81,13 +81,13 @@
             margin: 2px 0 0;
         }
 
-        dialog#objektmenu form[data-action] {
+        dialog.listmenu form[data-action] {
             display: none;
         }
     </style>
 </head>
 <body>
-<dialog id="objektmenu">
+<dialog id="objektmenu" class="listmenu">
     <form method="dialog" id="dialog-form">
         <header>
             <span id="menu-header"></span>
