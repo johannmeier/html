@@ -59,13 +59,23 @@
             height: 1rem;
         }
 
-        div.details > div > :first-child {
+        div.details > div:first-of-type > :first-child {
             flex-grow: 1;
         }
 
         div.details > :last-child {
             width: 1rem;
             margin-left: 1rem;
+        }
+
+        div.component {
+            margin-top: 10px;
+            background-color: #e4eaef;
+            padding-bottom: 1px;
+        }
+        .component > header {
+            background-color: aquamarine;
+            padding: 10px;
         }
     </style>
 </head>
@@ -84,6 +94,20 @@
         <div></div>
     </div>
 </details>
+
+<div class="component">
+    <header>Objektdaten</header>
+    <div class="details">
+        <label>Objektname</label>
+        <div><span>UEJ9I</span><img src="/img/error.svg" alt="hello"/><img src="/img/warning.svg" alt="hello"/></div>
+        <img src="/img/info.svg" alt="hello"/>
+    </div>
+    <div class="details">
+        <label>Objektart</label>
+        <div><span>EAR</span><img src="/img/warning.svg" alt="hello"/></div>
+        <div></div>
+    </div>
+</div>
 
 </body>
 </html>
