@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail</title>
+
+    <style>
+        body {
+            width: 500px;
+        }
+
+        details {
+            display: inline-block;
+            border-radius: 3px;
+            background-color: #e4eaef;
+            padding-bottom: 1px;
+        }
+
+        details[open] {
+            display: block;
+        }
+
+        summary {
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            background-color: aquamarine;
+        }
+
+        summary::after {
+            content: '';
+            width: 18px;
+            height: 10px;
+            background: url('img/arrow.svg');
+            background-size: cover;
+            margin-left: .75em;
+            transition: 0.2s;
+        }
+
+        details[open] > summary::after {
+            transform: rotate(180deg);
+        }
+
+        div.details {
+            display: flex;
+            margin: 10px;
+        }
+
+        div.details > label {
+            width: 150px;
+        }
+
+        div.details > div:first-of-type {
+            display: flex;
+            flex-grow: 1;
+        }
+
+        div.details > div > img {
+            height: 1rem;
+        }
+
+        div.details > div > :first-child {
+            flex-grow: 1;
+        }
+
+        div.details > :last-child {
+            width: 1rem;
+            margin-left: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<details>
+    <summary>Objektdaten</summary>
+    <div class="details">
+        <label>Objektname</label>
+        <div><span>UEJ9I</span><img src="/img/error.svg" alt="hello"/><img src="/img/warning.svg" alt="hello"/></div>
+        <img src="/img/info.svg" alt="hello"/>
+    </div>
+    <div class="details">
+        <label>Objektart</label>
+        <div><span>EAR</span><img src="/img/warning.svg" alt="hello"/></div>
+        <div></div>
+    </div>
+</details>
+
+</body>
+</html>
