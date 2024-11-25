@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tab component</title>
+    <style>
+        nav {
+            width: fit-content;
+        }
+    </style>
+</head>
+<body>
+
+<input autofocus type="text" value="Hello"/>
+
+<nav tabindex="0" class="tab-component">
+    <button tabindex="-1" data-tab-x="1">button 1</button>
+    <button tabindex="-2" data-tab-x="2">button 2</button>
+    <button tabindex="-3" data-tab-x="3">button 3</button>
+</nav>
+
+<textarea>Wolfgang</textarea>
+
+</body>
+<script src="js/tab-component.js"></script>
+</html>
