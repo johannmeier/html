@@ -4,6 +4,32 @@
         let currentY = 1;
         let type;
 
+        const keys = new Map();
+        keys.set(
+            'ArrowUp', () => {
+                if (focus(currentX, currentY - 1)) {
+                    currentY--;
+                }
+            });
+        keys.set(
+            'ArrowLeft', () => {
+                if (focus(currentX - 1, currentY)) {
+                    currentX--;
+                }
+            });
+        keys.set(
+            'ArrowDown', () => {
+                if (focus(currentX, currentY + 1)) {
+                    currentY++;
+                }
+            });
+        keys.set(
+            'ArrowRight', () => {
+                if (focus(currentX + 1, currentY)) {
+                    currentX++;
+                }
+            });
+
         function focus(x, y) {
             const currentElement = getElement(x, y);
             if (currentElement) {
@@ -42,31 +68,10 @@
             }
         }
 
-        const keys = new Map();
-        keys.set(
-            'ArrowUp', () => {
-                if (focus(currentX, currentY - 1)) {
-                    currentY--;
-                }
-            });
-        keys.set(
-            'ArrowLeft', () => {
-                if (focus(currentX - 1, currentY)) {
-                    currentX--;
-                }
-            });
-        keys.set(
-            'ArrowDown', () => {
-                if (focus(currentX, currentY + 1)) {
-                    currentY++;
-                }
-            });
-        keys.set(
-            'ArrowRight', () => {
-                if (focus(currentX + 1, currentY)) {
-                    currentX++;
-                }
-            });
+        function setTabIndex() {
+            component.querySelectorAll('[data-tab-x], [data-tab-y]').forEach(e => e.tabIndex = -1);
+            component.querySelector('[data-tab-x], [data-tab-y]').tabIndex = 0;
+        }
 
         function wireXY() {
             component.addEventListener('keydown', function (event) {
@@ -78,6 +83,7 @@
         }
 
         setType();
+        setTabIndex();
         wireXY();
     }
 
