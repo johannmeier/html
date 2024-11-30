@@ -1,61 +1,103 @@
 (() => {
     function TabComponent(component) {
-        let currentX = 1;
-        let currentY = 1;
         let type;
 
         const keys = new Map();
-        keys.set(
-            'ArrowUp', () => {
-                if (focus(currentX, currentY - 1)) {
-                    currentY--;
-                }
-            });
-        keys.set(
-            'ArrowLeft', () => {
-                if (focus(currentX - 1, currentY)) {
-                    currentX--;
-                }
-            });
-        keys.set(
-            'ArrowDown', () => {
-                if (focus(currentX, currentY + 1)) {
-                    currentY++;
-                }
-            });
-        keys.set(
-            'ArrowRight', () => {
-                if (focus(currentX + 1, currentY)) {
-                    currentX++;
-                }
-            });
+        keys.set('ArrowUp', arrowUp);
+        keys.set('ArrowLeft', arrowLeft);
+        keys.set('ArrowDown', arrowDown);
+        keys.set('ArrowRight', arrowRight);
 
-        function focus(x, y) {
-            const currentElement = getElement(x, y);
-            if (currentElement) {
-                component.querySelectorAll('[data-tab-x], [data-tab-y]').forEach(e => e.tabIndex = -1);
-                currentElement.tabIndex = 0;
-                setTimeout(() => {
-                    currentElement.focus();
-                }, 0);
-                return true;
+        function isHidden(element) {
+            return element.style.display === 'none';
+        }
+
+        function getNextTabElement(currentElement, elements) {
+            for (let i = 0; i < elements.length - 1; i++) {
+                const element = elements[i];
+                if (element === currentElement) {
+                    const nextElement = elements[i + 1];
+                    if (isHidden(nextElement)) {
+                        return getNextTabElement(nextElement, elements);
+                    } else {
+                        return nextElement;
+                    }
+                }
+            }
+            return null;
+        }
+
+        function getPreviousTabElement(currentElement, elements) {
+            for (let i = 1; i < elements.length; i++) {
+                const element = elements[i];
+                if (element === currentElement) {
+                    const previousElement = elements[i - 1];
+                    if (isHidden(previousElement)) {
+                        return getPreviousTabElement(previousElement, elements);
+                    } else {
+                        return previousElement;
+                    }
+                }
+            }
+            return null;
+        }
+
+        function getRowTabElements(element) {
+            if (type === "xy") {
+                return component.querySelectorAll(`[data-tab-y="${element.dataset.tabY}"]`);
             } else {
-                return false;
+                return component.querySelectorAll(`[data-tab-x]`);
             }
         }
 
-        function getElement(x, y) {
+        function getColTabElements(element) {
             if (type === "xy") {
-                return component.querySelector(`[data-tab-x='${x}'][data-tab-y='${y}']`);
+                return component.querySelectorAll(`[data-tab-x="${element.dataset.tabX}"]`);
+            } else {
+                return component.querySelectorAll(`[data-tab-y]`);
             }
-            if (type === "x") {
-                return component.querySelector(`[data-tab-x='${x}']`);
-            }
-            if (type === "y") {
-                return component.querySelector(`[data-tab-y='${y}']`);
-            }
+        }
 
-            return null;
+        function getNextLeftTabElement(element) {
+            return getPreviousTabElement(element, getRowTabElements(element));
+        }
+
+        function getNextRightTabElement(element) {
+            return getNextTabElement(element, getRowTabElements(element));
+        }
+
+        function getNextUpperTabElement(element) {
+            return getPreviousTabElement(element, getColTabElements(element));
+        }
+
+        function getNextLowerTabElement(element) {
+            return getNextTabElement(element, getColTabElements(element));
+        }
+
+        function focus(element) {
+            if (element) {
+                component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(e => e.tabIndex = -1);
+                setTimeout(() => {
+                    element.tabIndex = 0;
+                    element.focus();
+                }, 0);
+            }
+        }
+
+        function arrowUp(element) {
+            focus(getNextUpperTabElement(element));
+        }
+
+        function arrowLeft(element) {
+            focus(getNextLeftTabElement(element));
+        }
+
+        function arrowDown(element) {
+            focus(getNextLowerTabElement(element));
+        }
+
+        function arrowRight(element) {
+            focus(getNextRightTabElement(element));
         }
 
         function setType() {
@@ -76,7 +118,7 @@
         function wireXY() {
             component.addEventListener('keydown', function (event) {
                 if (keys.has(event.key)) {
-                    keys.get(event.key)();
+                    keys.get(event.key)(event.target);
                     event.preventDefault();
                 }
             });

@@ -7,6 +7,15 @@
         nav {
             width: fit-content;
         }
+
+        .tab-component {
+            margin: 1px;
+        }
+
+        .tab-component:has(:focus) {
+            border: 1px solid gray;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -36,7 +45,21 @@
             <button data-tab-x="1" data-tab-y="2">12</button>
         </td>
         <td>
-            <button data-tab-x="2" data-tab-y="2">22</button>
+            <button style="display: none" data-tab-x="2" data-tab-y="2">22</button>
+        </td>
+        <td>
+            <button style="display: none" data-tab-x="3" data-tab-y="2">32</button>
+        </td>
+        <td>
+            <button data-tab-x="4" data-tab-y="2">42</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a data-tab-x="1" data-tab-y="3">13</a>
+        </td>
+        <td>
+            <button data-tab-x="2" data-tab-y="3">23</button>
         </td>
     </tr>
 </table>
