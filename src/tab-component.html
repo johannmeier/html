@@ -6,8 +6,11 @@
     <style>
         nav {
             width: fit-content;
+            display: flex;
+            flex-direction: column;
         }
 
+        /*
         .tab-component {
             margin: 1px;
         }
@@ -16,16 +19,20 @@
             border: 1px solid gray;
             margin: 0;
         }
+        */
+        [tabindex='0'] {
+            background-color: aquamarine;
+        }
     </style>
 </head>
 <body>
 
 <input autofocus type="text" value="Hello"/>
 
-<nav class="tab-component" style="display: flex;flex-direction: column;">
-    <button data-tab-y="1">button 1</button>
-    <button data-tab-y="2">button 2</button>
-    <button data-tab-y="3">button 3</button>
+<nav class="tab-component">
+    <button type="button" data-tab-y="1">button 1</button>
+    <button type="button" data-tab-y="2">button 2</button>
+    <button type="button" data-tab-y="3">button 3</button>
 </nav>
 
 <table class="tab-component">

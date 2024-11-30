@@ -115,18 +115,26 @@
             component.querySelector('[data-tab-x], [data-tab-y]').tabIndex = 0;
         }
 
-        function wireXY() {
+        function wire() {
             component.addEventListener('keydown', function (event) {
                 if (keys.has(event.key)) {
                     keys.get(event.key)(event.target);
                     event.preventDefault();
                 }
             });
+            component.addEventListener('click', function (event) {
+                const target = event.target;
+                if (target.dataset.tabX || target.dataset.tabY) {
+                    component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(e => e.tabIndex = -1);
+                    event.target.tabIndex = 0;
+                    event.target.focus();
+                }
+            });
         }
 
         setType();
         setTabIndex();
-        wireXY();
+        wire();
     }
 
     function wire() {
