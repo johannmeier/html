@@ -79,7 +79,11 @@
                 component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(e => e.tabIndex = -1);
                 setTimeout(() => {
                     element.tabIndex = 0;
-                    element.focus();
+                    if (element.tagName === "INPUT" && element.type === "radio") {
+                        element.click();
+                    } else {
+                        element.focus();
+                    }
                 }, 0);
             }
         }
