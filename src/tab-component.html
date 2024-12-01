@@ -10,7 +10,6 @@
             flex-direction: column;
         }
 
-        /*
         .tab-component {
             margin: 1px;
         }
@@ -19,9 +18,19 @@
             border: 1px solid gray;
             margin: 0;
         }
-        */
-        [tabindex='0'] {
-            background-color: aquamarine;
+        .tab-component:has(:focus) [tabindex='0'] {
+            background-color: aquamarine !important;
+        }
+        button.href, button[formaction] {
+            text-decoration: underline;
+            border: none;
+            background: none;
+            padding: 0;
+        }
+
+        input[type=image] {
+            height: 1.5rem;
+            width: 1.5rem;
         }
     </style>
 </head>
@@ -29,47 +38,60 @@
 
 <input autofocus type="text" value="Hello"/>
 
-<nav class="tab-component">
-    <button type="button" data-tab-y="1">button 1</button>
-    <button type="button" data-tab-y="2">button 2</button>
-    <button type="button" data-tab-y="3">button 3</button>
-</nav>
+<form>
+    <nav class="tab-component">
+        <button formaction="content1.html" data-tab-y="1">button 1</button>
+        <button formaction="content2.html" data-tab-y="2">button 2</button>
+        <button type="button" data-tab-y="3">button 3</button>
+    </nav>
+</form>
 
-<table class="tab-component">
-    <tr>
-        <td>
-            <button data-tab-x="1" data-tab-y="1">11</button>
-        </td>
-        <td>
-            <button data-tab-x="2" data-tab-y="1">21</button>
-        </td>
-        <td>
-            <button data-tab-x="3" data-tab-y="1">31</button>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <button data-tab-x="1" data-tab-y="2">12</button>
-        </td>
-        <td>
-            <button style="display: none" data-tab-x="2" data-tab-y="2">22</button>
-        </td>
-        <td>
-            <button style="display: none" data-tab-x="3" data-tab-y="2">32</button>
-        </td>
-        <td>
-            <button data-tab-x="4" data-tab-y="2">42</button>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <a data-tab-x="1" data-tab-y="3">13</a>
-        </td>
-        <td>
-            <button data-tab-x="2" data-tab-y="3">23</button>
-        </td>
-    </tr>
-</table>
+<form>
+    <table class="tab-component">
+        <tr>
+            <td>
+                <button class="href" formaction="content1.html" data-tab-x="1" data-tab-y="1">11</button>
+            </td>
+            <td>
+                <button type="button" data-tab-x="2" data-tab-y="1">21</button>
+            </td>
+            <td>
+                <button type="button" data-tab-x="3" data-tab-y="1">31</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button type="button" data-tab-x="1" data-tab-y="2">12</button>
+            </td>
+            <td>
+                <button type="button" style="display: none" data-tab-x="2" data-tab-y="2">22</button>
+            </td>
+            <td>
+                <button type="button" data-tab-x="3" data-tab-y="2">
+                    <input formaction="lorem.html" type="image" src="/img/warning.svg" alt="info"/>
+                </button>
+            </td>
+            <td>
+                <input formaction="lorem.html" type="image" src="/img/info.svg" data-tab-x="4" data-tab-y="2" alt="info"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="content1.html" data-tab-x="1" data-tab-y="3">13</a>
+            </td>
+            <td>
+                <button type="button" data-tab-x="2" data-tab-y="3">23</button>
+            </td>
+        </tr>
+    </table>
+</form>
+<script>
+    document.querySelector("a").addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.target.click();
+        }
+    });
+</script>
 
 <textarea>Wolfgang</textarea>
 

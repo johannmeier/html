@@ -109,14 +109,18 @@
                 type = "xy";
             } else if (component.querySelector("[data-tab-x]")) {
                 type = "x";
-            } else {
+            } else if (component.querySelector("[data-tab-y]")) {
                 type = "y";
+            } else {
+                type = null;
             }
         }
 
         function setTabIndex() {
-            component.querySelectorAll('[data-tab-x], [data-tab-y]').forEach(e => e.tabIndex = -1);
-            component.querySelector('[data-tab-x], [data-tab-y]').tabIndex = 0;
+            if (type != null) {
+                component.querySelectorAll('[data-tab-x], [data-tab-y]').forEach(e => e.tabIndex = -1);
+                component.querySelector('[data-tab-x], [data-tab-y]').tabIndex = 0;
+            }
         }
 
         function wire() {
