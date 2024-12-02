@@ -9,7 +9,7 @@
         keys.set('ArrowRight', arrowRight);
 
         function isHidden(element) {
-            return element.style.display === 'none';
+            return (element.offsetParent === null) || !element.checkVisibility();
         }
 
         function getNextTabElement(currentElement, elements) {
@@ -42,19 +42,35 @@
             return null;
         }
 
+        function sortColElements(colElements) {
+            return Array.from(colElements).sort((a,b) => {
+                const aY = parseInt(a.dataset.tabY);
+                const bY = parseInt(b.dataset.tabY);
+                return aY - bY;
+            })
+        }
+
+        function sortRowElements(rowElements) {
+            return Array.from(rowElements).sort((a,b) => {
+                const aX = parseInt(a.dataset.tabX);
+                const bX = parseInt(b.dataset.tabX);
+                return aX - bX;
+            })
+        }
+
         function getRowTabElements(element) {
             if (type === "xy") {
-                return component.querySelectorAll(`[data-tab-y="${element.dataset.tabY}"]`);
+                return sortRowElements(component.querySelectorAll(`[data-tab-y="${element.dataset.tabY}"]`));
             } else {
-                return component.querySelectorAll(`[data-tab-x]`);
+                return sortRowElements(component.querySelectorAll(`[data-tab-x]`));
             }
         }
 
         function getColTabElements(element) {
             if (type === "xy") {
-                return component.querySelectorAll(`[data-tab-x="${element.dataset.tabX}"]`);
+                return sortColElements(component.querySelectorAll(`[data-tab-x="${element.dataset.tabX}"]`));
             } else {
-                return component.querySelectorAll(`[data-tab-y]`);
+                return sortColElements(component.querySelectorAll(`[data-tab-y]`));
             }
         }
 
@@ -104,9 +120,21 @@
             focus(getNextRightTabElement(element));
         }
 
+        function setMissingTabs() {
+            component.querySelectorAll('[data-tab-x], [data-tab-y]').forEach(e => {
+                if (!e.dataset.tabX) {
+                    e.dataset.tabX = "1";
+                }
+                if (!e.dataset.tabY) {
+                    e.dataset.tabY = "1";
+                }
+            });
+        }
+
         function setType() {
             if (component.querySelector("[data-tab-x][data-tab-y]")) {
                 type = "xy";
+                setMissingTabs();
             } else if (component.querySelector("[data-tab-x]")) {
                 type = "x";
             } else if (component.querySelector("[data-tab-y]")) {
@@ -124,20 +152,20 @@
         }
 
         function wire() {
-            component.addEventListener('keydown', function (event) {
+            component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(e => e.addEventListener('keydown', function (event) {
                 if (keys.has(event.key)) {
                     keys.get(event.key)(event.target);
                     event.preventDefault();
                 }
-            });
-            component.addEventListener('click', function (event) {
+            }));
+            component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(e => e.addEventListener('click', function (event) {
                 const target = event.target;
                 if (target.dataset.tabX || target.dataset.tabY) {
-                    component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(e => e.tabIndex = -1);
+                    component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(el => el.tabIndex = -1);
                     event.target.tabIndex = 0;
                     event.target.focus();
                 }
-            });
+            }));
         }
 
         setType();
@@ -147,7 +175,7 @@
 
     function wire() {
         document.querySelectorAll(".tab-component").forEach(c => {
-            new TabComponent(c);
+            TabComponent(c);
         });
     }
 
