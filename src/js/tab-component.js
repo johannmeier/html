@@ -294,8 +294,8 @@
 
         EventTarget.prototype.addEventListener = function (a, b, c) {
             this.realAddEventListener(a, b, c);
-            if (a === 'click') {
-                this.dataset.tabClick = "true";
+            if (a === 'click' && 'dataset' in this) {
+                this['dataset'].tabClick = "true";
             }
         };
     }

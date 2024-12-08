@@ -39,6 +39,11 @@
                 }
             }
         });
+        document.getElementById(MENU_ID).addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && !event.shiftKey && !event.ctrlKey && !event.altKey) {
+                event.currentTarget.close();
+            }
+        })
     }
 
     function disableAll(menu) {
@@ -49,6 +54,11 @@
 
     function enableDisableItems(menu, objname, objart, status) {
         disableAll(menu);
+
+
+        enableMenuItem(menu.querySelector("[data-requestname='protokoll']"));
+        enableMenuItem(menu.querySelector("[data-requestname='download-protokoll']"));
+        enableMenuItem(menu.querySelector("[data-requestname='freigeben']"));
 
         if (status !== "S") {
             enableMenuItem(menu.querySelector("[data-requestname='erfassen']"));

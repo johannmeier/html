@@ -85,9 +85,10 @@
             display: none;
         }
     </style>
+    <script src="/js/tab-component.js"></script>
 </head>
 <body>
-<dialog id="objektmenu" class="listmenu">
+<dialog id="objektmenu" class="listmenu tab-component1">
     <form method="dialog" id="dialog-form">
         <header>
             <span id="menu-header"></span>
@@ -115,7 +116,7 @@
         </div>
     </nav>
     <nav id="dvz">
-        <button data-requestname="freigeben" form="submit-menu" role="link">Freigeben</button>
+        <a href="lorem.html" data-requestname="freigeben" form="submit-menu" role="link">Freigeben</a>
         <button data-requestname="reaktivieren" form="submit-menu" role="link">Reaktivieren</button>
     </nav>
     <nav id="admin">
@@ -140,6 +141,10 @@
 
 <button class="menu-button" data-objname="UEJUN1" data-objart="PGM" data-status="E">UEJUN1.PGM</button>
 <button class="menu-button" data-objname="UEJ9I" data-objart="EAR" data-status="B">UEJ9I.EAR</button>
+
+<div style="height: 2000px">
+   <p>hello </p>
+</div>
 
 <script src="/js/objektmenu.js"></script>
 
