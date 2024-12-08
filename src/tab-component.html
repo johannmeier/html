@@ -18,9 +18,11 @@
             border: 1px solid gray;
             margin: 0;
         }
+
         .tab-component:has(:focus) [tabindex='0'] {
             background-color: aquamarine !important;
         }
+
         button.href, button[formaction] {
             text-decoration: underline;
             border: none;
@@ -33,6 +35,7 @@
             width: 1.5rem;
         }
     </style>
+    <script src="js/tab-component.js"></script>
 </head>
 <body>
 
@@ -67,12 +70,12 @@
                 <button type="button" style="display: none" data-tab-x="2" data-tab-y="2">22</button>
             </td>
             <td>
-                <button type="button" data-tab-x="3" data-tab-y="2">
-                    <input formaction="lorem.html" type="image" src="/img/warning.svg" alt="info"/>
-                </button>
+                <input data-tab-x="3" data-tab-y="2" formaction="lorem.html" type="image" src="/img/warning.svg"
+                       alt="info"/>
             </td>
             <td>
-                <input formaction="lorem.html" type="image" src="/img/info.svg" data-tab-x="4" data-tab-y="2" alt="info"/>
+                <input formaction="lorem.html" type="image" src="/img/info.svg" data-tab-x="4" data-tab-y="2"
+                       alt="info"/>
             </td>
         </tr>
         <tr>
@@ -90,16 +93,19 @@
         </tr>
     </table>
 </form>
-<script>
-    document.querySelector("a").addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-            event.target.click();
-        }
-    });
-</script>
+
+<table class="tab-component1">
+    <tr><th tabindex="0">header1</th><th><span tabindex="0">header2</span></th></tr>
+    <tr><td><a href="page4.html">page4</a></td><td><button type="button" class="click">button</button></td></tr>
+    <tr><td><img src="/img/info.svg" alt="info" onclick="alert('holla')"/></td><td>Hello</td></tr>
+</table>
 
 <textarea>Wolfgang</textarea>
+<script>
+    document.querySelector(".click").addEventListener("click", () => {
+        alert("clicked");
+    })
+</script>
 
 </body>
-<script src="js/tab-component.js"></script>
 </html>

@@ -1,5 +1,15 @@
+/**
+ - add keydown listener if element has a click listener and no keydown or keypress listener
+ - two modes
+   - cursor movement (class 'tab-component'):
+     use cursor keys to move between tabbable elements
+   - tab trap (class 'tab-component1') for dialogs:
+     use cursor keys and tab key to move between tabbable elements
+ -
+ */
 (() => {
-    function TabComponent(component) {
+    function TabComponent(component, onlyCursors) {
+        const allTabElements = "button,a,[tabindex='0'],input[type='checkbox'],input[type='radio'],input[type='submit'],input[type='image'],input[type='button'],[onclick],[data-tab-click]";
         let type;
 
         const keys = new Map();
@@ -8,8 +18,16 @@
         keys.set('ArrowDown', arrowDown);
         keys.set('ArrowRight', arrowRight);
 
+        function getAllTabElements(element) {
+            return element.querySelectorAll(allTabElements);
+        }
+
         function isHidden(element) {
             return (element.offsetParent === null) || !element.checkVisibility();
+        }
+
+        function isDisabled(element) {
+            return element.disabled;
         }
 
         function getNextTabElement(currentElement, elements) {
@@ -17,7 +35,7 @@
                 const element = elements[i];
                 if (element === currentElement) {
                     const nextElement = elements[i + 1];
-                    if (isHidden(nextElement)) {
+                    if (isHidden(nextElement) || isDisabled(nextElement)) {
                         return getNextTabElement(nextElement, elements);
                     } else {
                         return nextElement;
@@ -32,7 +50,7 @@
                 const element = elements[i];
                 if (element === currentElement) {
                     const previousElement = elements[i - 1];
-                    if (isHidden(previousElement)) {
+                    if (isHidden(previousElement) || isDisabled(previousElement)) {
                         return getPreviousTabElement(previousElement, elements);
                     } else {
                         return previousElement;
@@ -43,7 +61,7 @@
         }
 
         function sortColElements(colElements) {
-            return Array.from(colElements).sort((a,b) => {
+            return Array.from(colElements).sort((a, b) => {
                 const aY = parseInt(a.dataset.tabY);
                 const bY = parseInt(b.dataset.tabY);
                 return aY - bY;
@@ -51,7 +69,7 @@
         }
 
         function sortRowElements(rowElements) {
-            return Array.from(rowElements).sort((a,b) => {
+            return Array.from(rowElements).sort((a, b) => {
                 const aX = parseInt(a.dataset.tabX);
                 const bX = parseInt(b.dataset.tabX);
                 return aX - bX;
@@ -92,7 +110,9 @@
 
         function focus(element) {
             if (element) {
-                component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(e => e.tabIndex = -1);
+                if (!onlyCursors) {
+                    component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(e => e.tabIndex = -1);
+                }
                 setTimeout(() => {
                     element.tabIndex = 0;
                     if (element.tagName === "INPUT" && element.type === "radio") {
@@ -105,19 +125,35 @@
         }
 
         function arrowUp(element) {
-            focus(getNextUpperTabElement(element));
+            if (type === "x") {
+                focus(getNextLeftTabElement(element));
+            } else {
+                focus(getNextUpperTabElement(element));
+            }
         }
 
         function arrowLeft(element) {
-            focus(getNextLeftTabElement(element));
+            if (type === "y") {
+                focus(getNextUpperTabElement(element));
+            } else {
+                focus(getNextLeftTabElement(element));
+            }
         }
 
         function arrowDown(element) {
-            focus(getNextLowerTabElement(element));
+            if (type === "x") {
+                focus(getNextRightTabElement(element));
+            } else {
+                focus(getNextLowerTabElement(element));
+            }
         }
 
         function arrowRight(element) {
-            focus(getNextRightTabElement(element));
+            if (type === "y") {
+                focus(getNextLowerTabElement(element));
+            } else {
+                focus(getNextRightTabElement(element));
+            }
         }
 
         function setMissingTabs() {
@@ -131,6 +167,25 @@
             });
         }
 
+        function isTdTabbable(td) {
+            return td.onclick || td.tabIndex === 0;
+        }
+
+        function hasClickListener(element) {
+            return element.onclick || element.dataset.tabClick;
+        }
+
+        function checkClick(element) {
+            if (hasClickListener(element) && !(element.onkeydown || element.onkeypress)) {
+                element.onkeydown = (event) => {
+                    if (event.key === "Enter") {
+                        element.click();
+                        event.preventDefault();
+                    }
+                }
+            }
+        }
+
         function setType() {
             if (component.querySelector("[data-tab-x][data-tab-y]")) {
                 type = "xy";
@@ -140,32 +195,83 @@
             } else if (component.querySelector("[data-tab-y]")) {
                 type = "y";
             } else {
-                type = null;
+                if (component.tagName === "TABLE") {
+                    type = "xy";
+                    const rows = component.querySelectorAll("tr");
+                    for (let y = 0; y < rows.length; y++) {
+                        const cols = rows[y].querySelectorAll("th,td");
+                        for (let x = 0; x < cols.length; x++) {
+                            const cell = cols[x];
+                            if (isTdTabbable(cell)) {
+                                cell.dataset.tabY = String(y + 1);
+                                cell.dataset.tabX = String(x + 1);
+                                checkClick(cell);
+                            }
+                            getAllTabElements(cell).forEach(e => {
+                                e.dataset.tabY = String(y + 1);
+                                e.dataset.tabX = String(x + 1);
+                                checkClick(e);
+                            })
+                        }
+                    }
+                } else {
+                    type = "y";
+                    const elements = getAllTabElements(component);
+                    for (let i = 0; i < elements.length; i++) {
+                        checkClick(elements[i]);
+                        elements[i].dataset.tabY = String(i + 1);
+                    }
+                }
             }
         }
 
         function setTabIndex() {
             if (type != null) {
-                component.querySelectorAll('[data-tab-x], [data-tab-y]').forEach(e => e.tabIndex = -1);
-                component.querySelector('[data-tab-x], [data-tab-y]').tabIndex = 0;
+                if (onlyCursors) {
+                    getAllTabElements(component).forEach(tab => tab.tabIndex = 0)
+                } else {
+                    component.querySelectorAll('[data-tab-x], [data-tab-y]').forEach(e => e.tabIndex = -1);
+                    component.querySelector('[data-tab-x], [data-tab-y]').tabIndex = 0;
+                }
             }
         }
 
         function wire() {
-            component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(e => e.addEventListener('keydown', function (event) {
+            component.addEventListener('keydown', function (event) {
+                if (event.altKey || event.ctrlKey) {
+                    return;
+                }
+
+                if (event.key === "Tab" && onlyCursors) {
+                    const tabElements = component.querySelectorAll("[data-tab-y]:not([disabled]), [data-tab-x]:not([disabled])")
+                    if (event.shiftKey) {
+                        if (event.target === tabElements[0]) {
+                            event.preventDefault()
+                            tabElements[tabElements.length - 1].focus();
+                        }
+                    } else {
+                        if (event.target === tabElements[tabElements.length - 1]) {
+                            event.preventDefault()
+                            tabElements[0].focus();
+                        }
+                    }
+                }
+
                 if (keys.has(event.key)) {
                     keys.get(event.key)(event.target);
                     event.preventDefault();
                 }
-            }));
-            component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(e => e.addEventListener('click', function (event) {
+            });
+            component.addEventListener('click', function (event) {
                 const target = event.target;
                 if (target.dataset.tabX || target.dataset.tabY) {
-                    component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(el => el.tabIndex = -1);
-                    event.target.tabIndex = 0;
+                    if (!onlyCursors) {
+                        component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(el => el.tabIndex = -1);
+                        event.target.tabIndex = 0;
+                    }
                     event.target.focus();
                 }
-            }));
+            });
         }
 
         setType();
@@ -173,11 +279,31 @@
         wire();
     }
 
-    function wire() {
+    function wireComponents() {
         document.querySelectorAll(".tab-component").forEach(c => {
-            TabComponent(c);
+            TabComponent(c, false);
+        });
+        document.querySelectorAll(".tab-component1").forEach(c => {
+            TabComponent(c, true);
         });
     }
 
-    wire();
+
+    function wireListener() {
+        EventTarget.prototype.realAddEventListener = EventTarget.prototype.addEventListener;
+
+        EventTarget.prototype.addEventListener = function (a, b, c) {
+            this.realAddEventListener(a, b, c);
+            if (a === 'click') {
+                this.dataset.tabClick = "true";
+            }
+        };
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        wireComponents();
+    })
+
+    wireListener();
+
 })();
