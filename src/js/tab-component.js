@@ -1,15 +1,15 @@
 /**
  - add keydown listener if element has a click listener and no keydown or keypress listener
  - two modes
-   - cursor movement (class 'tab-component'):
-     use cursor keys to move between tabbable elements
-   - tab trap (class 'tab-component1') for dialogs:
-     use cursor keys and tab key to move between tabbable elements
+ - cursor movement (class 'tab-component'):
+ use cursor keys to move between tabbable elements
+ - tab trap (class 'tab-component1') for dialogs:
+ use cursor keys and tab key to move between tabbable elements
  -
  */
 (() => {
     function TabComponent(component, onlyCursors) {
-        const allTabElements = "button,a,[tabindex='0'],input[type='checkbox'],input[type='radio'],input[type='submit'],input[type='image'],input[type='button'],[onclick],[data-tab-click]";
+        const allTabElements = "button:not([type='button']),a[href],input[type='checkbox'],input[type='radio'],input[type='submit'],input[type='image'],[onclick],[data-tab-click]";
         let type;
 
         const keys = new Map();
@@ -167,8 +167,8 @@
             });
         }
 
-        function isTdTabbable(td) {
-            return td.onclick || td.tabIndex === 0;
+        function isTabbable(element) {
+            return element.onclick || element.dataset.tabClick || element.tabIndex === 0;
         }
 
         function hasClickListener(element) {
@@ -176,8 +176,8 @@
         }
 
         function checkClick(element) {
-            if (hasClickListener(element) && !(element.onkeydown || element.onkeypress)) {
-                element.onkeydown = (event) => {
+            if (hasClickListener(element) && !(element.onkeydown || element.onkeypress) && element.tagName !== 'BUTTON') {
+                element.onkeydown = event => {
                     if (event.key === "Enter") {
                         element.click();
                         event.preventDefault();
@@ -202,7 +202,7 @@
                         const cols = rows[y].querySelectorAll("th,td");
                         for (let x = 0; x < cols.length; x++) {
                             const cell = cols[x];
-                            if (isTdTabbable(cell)) {
+                            if (isTabbable(cell)) {
                                 cell.dataset.tabY = String(y + 1);
                                 cell.dataset.tabX = String(x + 1);
                                 checkClick(cell);
@@ -231,7 +231,7 @@
                     getAllTabElements(component).forEach(tab => tab.tabIndex = 0)
                 } else {
                     component.querySelectorAll('[data-tab-x], [data-tab-y]').forEach(e => e.tabIndex = -1);
-                    component.querySelector('[data-tab-x], [data-tab-y]').tabIndex = 0;
+                    component.querySelector('[data-tab-x]:not([disabled]), [data-tab-y]:not([disabled])').tabIndex = 0;
                 }
             }
         }
@@ -269,7 +269,6 @@
                         component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(el => el.tabIndex = -1);
                         event.target.tabIndex = 0;
                     }
-                    event.target.focus();
                 }
             });
         }
@@ -290,17 +289,17 @@
 
 
     function wireListener() {
-        EventTarget.prototype.realAddEventListener = EventTarget.prototype.addEventListener;
+        EventTarget.prototype.tabComponentAddEventListener = EventTarget.prototype.addEventListener;
 
-        EventTarget.prototype.addEventListener = function (a, b, c) {
-            this.realAddEventListener(a, b, c);
-            if (a === 'click' && 'dataset' in this) {
+        EventTarget.prototype.addEventListener = function (eventName, listener, options) {
+            this.tabComponentAddEventListener(eventName, listener, options);
+            if (eventName === 'click' && 'dataset' in this) {
                 this['dataset'].tabClick = "true";
             }
         };
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("load", () => {
         wireComponents();
     })
 
