@@ -1,7 +1,7 @@
 (() => {
     let shortcut = 'aa';
     let global = true;
-    let addEventlistenerElements = [];
+    const addEventListenerElements = [];
     let keys = "";
 
     function isHidden(el) {
@@ -75,7 +75,7 @@
         if (element.tagName === 'A' && boundingRect.width === 0 && boundingRect.height === 0) {
             const childImage = element.querySelector("img");
             if (childImage) {
-                return  childImage;
+                return childImage;
             }
         }
         return element;
@@ -107,27 +107,25 @@
 
     function isEditable(target) {
         return target.tagName === 'INPUT' && (target.type !== 'radio' && target.type !== 'checkbox' && target.type !== 'button')
-            || target.tagName === 'TEXTAREA';
+            || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT';
     }
 
     function vimium(event) {
         const target = event.target;
         const key = event.key;
         if (global) {
-            if (isEditable(target)) {
-                if (key === 'Escape') {
-                    document.activeElement.blur();
-                }
-            } else {
-                if (key === 'r') {
+            if (key === 'Escape') {
+                document.activeElement.blur();
+            }
+            if (!isEditable(target)) {
+                if (key === 'r' && !event.ctrlKey && !event.altKey) {
                     window.location.reload();
                 }
-                if (key === 'f') {
+                if (key === 'f' && !event.ctrlKey && !event.altKey) {
                     global = false;
                     const allSet = new Set();
-                    addEventlistenerElements.forEach(e => allSet.add(e))
-                    document.querySelectorAll("button, input, select, textarea, a[href]").forEach(e => allSet.add(e))
-                    document.querySelectorAll("[onclick]").forEach(e => allSet.add(e))
+                    addEventListenerElements.forEach(e => allSet.add(e))
+                    document.querySelectorAll("button, input, select, textarea, a[href], [onclick]").forEach(e => allSet.add(e))
 
                     allSet.forEach(e => {
                         try {
@@ -175,12 +173,14 @@
         EventTarget.prototype.addEventListener = function (a, b, c) {
             this.realAddEventListener(a, b, c);
             if (a === 'click') {
-                addEventlistenerElements.push(this);
+                addEventListenerElements.push(this);
             }
         };
     }
 
-    window.addEventListener("keydown", vimium)
-    wire();
-
+    if (!window.vimum) {
+        window.addEventListener("keydown", vimium)
+        wire();
+        window.vimum = true;
+    }
 })()
