@@ -27,7 +27,7 @@
         }
 
         function isDisabled(element) {
-            return element.disabled;
+            return element.disabled || element.enabled === false;
         }
 
         function getNextTabElement(currentElement, elements) {
@@ -231,7 +231,12 @@
                     getAllTabElements(component).forEach(tab => tab.tabIndex = 0)
                 } else {
                     component.querySelectorAll('[data-tab-x], [data-tab-y]').forEach(e => e.tabIndex = -1);
-                    component.querySelector('[data-tab-x]:not([disabled]), [data-tab-y]:not([disabled])').tabIndex = 0;
+                    for (const e of component.querySelectorAll('[data-tab-x], [data-tab-y]')) {
+                        if (!isDisabled(e) && !isHidden(e)) {
+                            e.tabIndex = 0;
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -243,7 +248,13 @@
                 }
 
                 if (event.key === "Tab" && onlyCursors) {
-                    const tabElements = component.querySelectorAll("[data-tab-y]:not([disabled]), [data-tab-x]:not([disabled])")
+                    const tabElements = [];
+                    component.querySelectorAll("[data-tab-y], [data-tab-x]").forEach(e => {
+                        if (!isHidden(e) && !isDisabled(e)) {
+                            tabElements.push(e);
+                        }
+                    });
+
                     if (event.shiftKey) {
                         if (event.target === tabElements[0]) {
                             event.preventDefault()
@@ -262,15 +273,14 @@
                     event.preventDefault();
                 }
             });
-            component.addEventListener('click', function (event) {
-                const target = event.target;
-                if (target.dataset.tabX || target.dataset.tabY) {
+
+            component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(el =>
+                el.addEventListener('click', function (event) {
                     if (!onlyCursors) {
-                        component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(el => el.tabIndex = -1);
+                        component.querySelectorAll("[data-tab-x],[data-tab-y]").forEach(e => e.tabIndex = -1);
                         event.target.tabIndex = 0;
                     }
-                }
-            });
+                }));
         }
 
         setType();
@@ -287,7 +297,6 @@
         });
     }
 
-
     function wireListener() {
         EventTarget.prototype.tabComponentAddEventListener = EventTarget.prototype.addEventListener;
 
@@ -299,10 +308,12 @@
         };
     }
 
-    window.addEventListener("load", () => {
-        wireComponents();
-    })
+    if (!window.tabComponent) {
+        window.addEventListener("load", () => {
+            wireComponents();
+        })
 
-    wireListener();
-
+        wireListener();
+        window.tabComponent = true;
+    }
 })();
